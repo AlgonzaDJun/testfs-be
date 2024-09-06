@@ -1,0 +1,360 @@
+openapi: "3.0.3"
+info:
+  title: Knowledge Test - Full Stack Developer - Algonza Dewangga Arjunantyo
+  version: "1.0"
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: auth
+    description: Operasi login dan register
+  - name: product
+    description: CRUD Product
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register user
+      description: Register new user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              example:
+                nama: "Algonza"
+                email: "arjun"
+                password: "password"
+                jenis_kelamin: "L"
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "User created successfully"
+                  data:
+                    nama: "Algonza"
+                    email: "arjun"
+                    password: "password"
+                    jenis_kelamin: "L"
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login user
+      operationId: loginUser
+      requestBody:
+        description: Login user object
+        content:
+          application/json:
+            schema:
+              example:
+                email: "algonsadewangga@gmail.com"
+                password: "password"
+      responses:
+        "200":
+          description: Login Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login success"
+                  userId:
+                    type: string
+                    example: "5f759e2b4b3e4b0017b3e4b0"
+                  token:
+                    type: string
+                    example: "token"
+        "400":
+          description: Bad Request
+        "404":
+          description: Incorrect email or password
+        "500":
+          description: Internal Server Error
+
+  /auth/profile:
+    get:
+      tags:
+        - auth
+      summary: Get user profile
+      operationId: getUserProfile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Get user profile
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "User profile"
+                  data:
+                    nama: "Algonza"
+                    email: "algonsadewangga@gmail.com"
+                    jenis_kelamin: "L"
+                    password: "password"
+        "500":
+          description: Internal Server Error
+        "404":
+          description: User not found
+        "401":
+          description: Unauthorized
+
+  /product:
+    get:
+      tags:
+        - product
+      summary: Get all product By User
+      operationId: getAllProductByUser
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Get all product By User
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "Get all product by user"
+                  data:
+                    [
+                      {
+                        _id: "5f759e2b4b3e4b0017b3e4b0",
+                        user_id: "5f759e2b4b3e4b0017b3e4b0",
+                        nama_produk: "Produk A",
+                        harga: 10000,
+                        deskripsi: "Deskripsi produk",
+                        stok: 10,
+                      },
+                    ]
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+        - product
+      summary: Create product
+      operationId: createProduct
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Created product
+        content:
+          application/json:
+            schema:
+              example:
+                nama_produk: "Produk A"
+                harga: 10000
+                deskripsi: "Deskripsi produk"
+                stok: 10
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "Product created successfully"
+                  data:
+                    nama_produk: "Produk A"
+                    harga: 10000
+                    deskripsi: "Deskripsi produk"
+                    stok: 10
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+
+  /product/{id}:
+    get:
+      tags:
+        - product
+      summary: Get product by id
+      operationId: getProductById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of product
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Get product by id
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "Get product by id"
+                  data:
+                    _id: "5f759e2b4b3e4b0017b3e4b0"
+                    user_id: "5f759e2b4b3e4b0017b3e4b0"
+                    nama_produk: "Produk A"
+                    harga: 10000
+                    deskripsi: "Deskripsi produk"
+                    stok: 10
+        "500":
+          description: Internal Server Error
+        "404":
+          description: Product not found
+        "401":
+          description: Unauthorized
+    put:
+      tags:
+        - product
+      summary: Update product by id
+      operationId: updateProductById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of product
+          schema:
+            type: string
+      requestBody:
+        description: Updated product
+        content:
+          application/json:
+            schema:
+              example:
+                nama_produk: "Produk A"
+                harga: 10000
+                deskripsi: "Deskripsi produk"
+                stok: 10
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "Product updated successfully"
+                  data:
+                    nama_produk: "Produk A"
+                    harga: 10000
+                    deskripsi: "Deskripsi produk"
+                    stok: 10
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+        "404":
+          description: Product not found
+        "401":
+          description: Unauthorized
+    delete:
+      tags:
+        - product
+      summary: Delete product by id
+      operationId: deleteProductById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of product
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  success: true
+                  message: "Product deleted successfully"
+        "500":
+          description: Internal Server Error
+        "404":
+          description: Product not found
+        "401":
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      required:
+        - nama
+        - password
+        - email
+      properties:
+        _id:
+          type: string
+          format: uuid
+          example: 5f759e2b4b3e4b0017b3e4b0
+
+        nama:
+          type: string
+          example: Dewangga Arjunantyo
+        email:
+          type: string
+          example: algonsa@gmail.com
+        password:
+          type: string
+          example: password
+        jenis_kelamin:
+          type: string
+          example: Laki-laki
+    Product:
+      type: object
+      required:
+        - nama_produk
+        - harga
+        - user_id
+        - stok
+        - deskripsi
+      properties:
+        _id:
+          type: string
+          format: uuid
+          example: 5f759e2b4b3e4b0017b3e4b0
+        user_id:
+          type: string
+          format: uuid
+          example: 5f759e2b4b3e4b0017b3e4b0
+        nama_produk:
+          type: string
+          example: Produk A
+        harga:
+          type: number
+          example: 10000
+        deskripsi:
+          type: string
+          example: Deskripsi produk
+        stok:
+          type: number
+          example: 10
+        image:
+          type: string
+          example: https://image.com/image.jpg
